@@ -1,0 +1,7 @@
+altair==4.2.0
+numpy==1.24.1
+opencv_python==4.7.0.68
+pandas==1.5.2
+plotly==5.2.2
+reportlab==3.6.12
+streamlit==1.17.0
