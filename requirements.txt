@@ -2,3 +2,4 @@ pandas==1.5.2
 plotly==5.2.2
 streamlit==1.17.0
 openpyxl==3.0.10
+pip==22.3.1
