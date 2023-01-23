@@ -5,12 +5,12 @@ import plotly.express as px
 
 
 st.set_page_config(page_title='Student progress Analysis',
-page_icon='/Users/darshangowda/Documents/StudentAnalytics.py/RVlogo.png', 
+page_icon='RVlogo.png', 
 initial_sidebar_state="expanded")
 
 
 st.empty()
-st.sidebar.image("/Users/darshangowda/Documents/StudentAnalytics.py/logo.png", width=300)
+st.sidebar.image("logo.png", width=300)
 st.sidebar.title("MENU")
 
 
@@ -30,11 +30,11 @@ def student_analysis():
     if batch_choice == "2021 Batch":
         branch_choice = st.selectbox("Select the Branch", ["CSE", "ISE","EC", "ME"])
         if branch_choice == "CSE":
-            xls = pd.ExcelFile('/Users/darshangowda/Documents/StudentAnalytics.py/2021.CSE.StudentMarksSheet.xlsx')
+            xls = pd.ExcelFile('2021.ISE-6.xlsx')
             plot_analysis(xls) 
 
         if branch_choice == "ISE":
-            xls = pd.ExcelFile('/Users/darshangowda/Documents/StudentAnalytics.py/2021.ISE-6.xlsx')
+            xls = pd.ExcelFile('2021.ISE-6.xlsx')
             plot_analysis(xls)
 
 def plot_analysis(xls):
