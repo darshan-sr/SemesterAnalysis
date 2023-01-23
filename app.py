@@ -295,7 +295,7 @@ def plot_analysis(xls):
             subject6_name = data.iloc[0,23]
             subject7_name = data.iloc[0,27]
             subject8_name = data.iloc[0,31]
-            subject9_name = data.iloc[0,15]
+            subject9_name = data.iloc[0,35]
             
             # Create a bar chart of the extracted marks
             fig = px.bar(x=[subject1_name, subject2_name,subject3_name,subject4_name,subject5_name,subject6_name,subject7_name,subject8_name,subject9_name],
