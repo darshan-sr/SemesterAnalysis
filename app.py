@@ -2,16 +2,16 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objs as go
 import plotly.express as px
-
+from streamlit_option_menu import option_menu
 
 st.set_page_config(page_title='Student progress Analysis',
 page_icon='RVlogo.png', 
 initial_sidebar_state="expanded")
 hide_st_style = """
             <style>
-            
+            #MainMenu {visibility: hidden;}
             footer {visibility: hidden;}
-            
+            header {visibility: hidden;}
             </style>
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
@@ -20,7 +20,8 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 
 st.empty()
 st.sidebar.image("logo.png", width=300)
-st.sidebar.title("MENU")
+
+
 
 
 
@@ -33,7 +34,7 @@ def student_analysis():
     if batch_choice == "2021 Batch":
         branch_choice = st.selectbox("Select the Branch", ["CSE", "ISE","EC", "ME"])
         if branch_choice == "CSE":
-            xls = pd.ExcelFile('2021.CSE.StudentMarksSheet.xlsx')
+            st.write("No data Found)
             
 
         if branch_choice == "ISE":
@@ -44,8 +45,20 @@ def plot_analysis(xls):
     sheet_name = st.selectbox("Select the semester", xls.sheet_names)
     data = pd.read_excel(xls, sheet_name=sheet_name)
     st.dataframe(data)
-    type_choice = st.selectbox("Select the type of analytics you need", ["Semester Analysis", "Subject Wise Analysis","Student wise Analysis"])
-    if type_choice == "Semester Analysis":
+    
+    st.markdown("<div style='text-align:center;'><h1>          </h1></div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align:center;'><h3>   SELECT THE TYPE OF ANALYSIS YOU NEED     </h3></div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align:center;'><h4>          </h4></div>", unsafe_allow_html=True)
+    selected = option_menu(
+        menu_title=None,
+        options=["Semester Analysis","Subject Wise Analysis","Student wise Analysis"],
+        icons=["person-workspace","stack","person"],
+        orientation="horizontal",
+        
+    )
+    
+    
+    if selected == "Semester Analysis":
         st.markdown("<div style='text-align:center;'><h3>          </h3></div>", unsafe_allow_html=True)
         st.markdown("<div style='text-align:center;'><h3>GRADE ANALYSIS 📈</h3></div>", unsafe_allow_html=True)
         
@@ -159,7 +172,7 @@ def plot_analysis(xls):
 
 
 
-    elif type_choice == "Subject Wise Analysis":
+    elif selected == "Subject Wise Analysis":
         st.write("Subject Wise Analysis")
         Subject1 = data.iloc[0, 3]
         Subject2 = data.iloc[0, 7]
@@ -290,10 +303,10 @@ def plot_analysis(xls):
             
 
 
-    elif type_choice == "Student wise Analysis":
+    elif selected == "Student wise Analysis":
 
 
-        student_name = st.selectbox("Select a student:", data[data.columns[2]].unique())
+        student_name = st.selectbox("Select a student:", data[data.columns[2]].unique(),index=1)
 
 
         # Filter the data to get the marks of the selected student
@@ -414,18 +427,12 @@ def check_credentials(username, password):
 
 def department_login():
     st.markdown("<div style='text-align:center;'><h1>DEPARTMENT LOGIN</h1></div>", unsafe_allow_html=True,)
-    uploaded_file = st.file_uploader("Choose a file", type="xlsx")
-    if uploaded_file:
-        with open("/Users/darshangowda/Documents/SavedXLSX/2021/ISE/2021.ISE.StudentMarksSheet.xlsx", "wb") as f:
-            f.write(uploaded_file.read())
-        st.success("File saved in desired folder.")
-    
-    st.sidebar.title("Login")
-    username = st.sidebar.text_input("Username")
-    password = st.sidebar.text_input("Password", type='password')
-    if st.sidebar.button("Submit"):
+  
+    username = st.text_input("Username")
+    password = st.text_input("Password", type='password')
+    if st.button("Submit"):
         if check_credentials(username, password):
-            st.sidebar.success("Logged in Successfully!")
+            st.success("Logged in Successfully!")
             uploaded_file = st.file_uploader("Choose a file", type="xlsx")
             if uploaded_file:
                 with open("/Users/darshangowda/Documents/SavedXLSX/2021.ISE.StudentMarksSheet.xlsx", "wb") as f:
@@ -443,19 +450,21 @@ def how_to_use():
 
 
 
+st.sidebar.title("")
+st.sidebar.title("")
+with st.sidebar:
     
-
-
-
-app_mode = st.sidebar.selectbox("Choose what you want 👇",["Student Analysis", "Department Login", "How to use"])
-if app_mode == "Student Analysis":
+    selected = option_menu(
+            menu_title= "Main Menu",
+            options= ["Student Analysis","Department Login","How to use"],
+            icons= ["person-workspace","briefcase","box-arrow-in-right"],
+            menu_icon="house",
+            default_index=0,
+            orientation="horizantal",
+        )
+if selected == "Student Analysis":
     student_analysis()
-elif app_mode == "Department Login":
+if selected == "Department Login":
     department_login()
-elif app_mode == "How to use":
-    how_to_use()
-
-
-
-
-
+if selected == "How to use":
+    how_to_use()  
