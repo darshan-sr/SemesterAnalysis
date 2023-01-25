@@ -34,7 +34,7 @@ def student_analysis():
     if batch_choice == "2021 Batch":
         branch_choice = st.selectbox("Select the Branch", ["CSE", "ISE","EC", "ME"])
         if branch_choice == "CSE":
-            st.write("No data Found)
+            st.write("No data Found")
             
 
         if branch_choice == "ISE":
