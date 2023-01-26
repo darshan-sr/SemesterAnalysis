@@ -3,23 +3,51 @@ import pandas as pd
 import plotly.graph_objs as go
 import plotly.express as px
 from streamlit_option_menu import option_menu
+import base64
+
+import streamlit_authenticator as stauth
+import database as db
+
+
 
 st.set_page_config(page_title='Student progress Analysis',
 page_icon='RVlogo.png', 
 initial_sidebar_state="expanded")
-hide_st_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            header {visibility: hidden;}
-            </style>
-            """
-st.markdown(hide_st_style, unsafe_allow_html=True)
+
+# hide_st_style = """
+#             <style>
+#             #MainMenu {visibility: hidden;}
+#             footer {visibility: hidden;}
+#             header {visibility: hidden;}
+#             </style>
+#             """
+# st.markdown(hide_st_style, unsafe_allow_html=True)
+
+def get_img_as_base64(file):
+    with open(file, "rb") as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+img = get_img_as_base64("sidebarlogo.jpg")
+
+page_bg_img = f"""
+<style>
+[data-testid="stSidebar"] > div:first-child {{
+background-image: url("data:image/png;base64,{img}");
+background-position: topleft;
+background-repeat: no-repeat;
+background-attachment: fixed;
+}}
+</style>
+"""
+
+st.markdown(page_bg_img, unsafe_allow_html=True)
+st.sidebar.title("")
+st.sidebar.title("")
 
 
 
-st.empty()
-st.sidebar.image("logo.png", width=300)
+
 
 
 
@@ -34,7 +62,7 @@ def student_analysis():
     if batch_choice == "2021 Batch":
         branch_choice = st.selectbox("Select the Branch", ["CSE", "ISE","EC", "ME"])
         if branch_choice == "CSE":
-            st.write("No data Found")
+            st.write("data yet to be uploaded')
             
 
         if branch_choice == "ISE":
@@ -419,28 +447,39 @@ def plot_analysis(xls):
 
 
 
-def check_credentials(username, password):
-    if username == "darshangowda" and password == "Darshan@123":
-        return True
-    else:
-        return False
 
 def department_login():
-    st.markdown("<div style='text-align:center;'><h1>DEPARTMENT LOGIN</h1></div>", unsafe_allow_html=True,)
-  
-    username = st.text_input("Username")
-    password = st.text_input("Password", type='password')
-    if st.button("Submit"):
-        if check_credentials(username, password):
-            st.success("Logged in Successfully!")
+    users = db.fetch_all_users()
+    usernames = [user["key"] for user in users]
+    names = [user["name"] for user in users]
+    hashed_passwords = [user["password"] for user in users]
+
+    authenticator = stauth.Authenticate(names, usernames, hashed_passwords,
+        "sales_dashboard", "abcdef", cookie_expiry_days=30)
+    name, authentication_status, username = authenticator.login("LOGIN", "main")
+
+    if authentication_status == False:
+        st.error("Username/password is incorrect")
+
+    if authentication_status == None:
+        st.warning("Please enter your username and password")
+
+    if authentication_status:
+        st.success("Logged in successfully")
+        authenticator.logout("Logout", "sidebar")
+
+        if username == "ISE":
             uploaded_file = st.file_uploader("Choose a file", type="xlsx")
             if uploaded_file:
                 with open("/Users/darshangowda/Documents/SavedXLSX/2021.ISE.StudentMarksSheet.xlsx", "wb") as f:
                     f.write(uploaded_file.read())
                 st.success("File saved in desired folder.")
 
-        else:
-            st.sidebar.error("Incorrect username or password",icon="☠️")
+
+
+    
+
+
 
 
 def how_to_use():
